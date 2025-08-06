@@ -1,0 +1,23 @@
+services:
+  - type: web
+    name: findmybizname
+    env: node
+    plan: free
+    runtime: node
+    buildCommand: npm install --production=false && npx vite build && npx esbuild server/index.ts --platform=node --packages=external --bundle --format=esm --outdir=dist
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DATABASE_URL
+        fromDatabase:
+          name: findmybizname-db
+          property: connectionString
+      - key: RAPIDAPI_KEY
+        sync: false
+
+databases:
+  - name: findmybizname-db
+    databaseName: findmybizname
+    user: findmybizname
+    plan: free
